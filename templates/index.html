@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Task Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f9; margin: 0; padding: 40px; display: flex; justify-content: center; }
+        .container { width: 500px; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .logout-btn { float: right; background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; text-decoration: none; font-size: 14px; }
+        .logout-btn:hover { background: #c82333; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+        input[type="text"], textarea { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        textarea { resize: vertical; height: 80px; }
+        button[type="submit"] { width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+        button[type="submit"]:hover { background: #218838; }
+        hr { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
+        .task-card { background: #f9f9f9; border-left: 4px solid #007bff; padding: 12px; margin-bottom: 10px; border-radius: 4px; }
+        .task-card h4 { margin: 0 0 5px 0; color: #007bff; }
+        .task-card p { margin: 3px 0; color: #555; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Logout Button -->
+    <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+
+    <h2>Welcome, {{ request.user.username }}! 👋</h2>
+    <p style="color: green; font-size: 13px;">Aapka data aapki email/account ke sath mehفوظ hai.</p>
+    <hr>
+
+    <!-- Naya Task / Message Add Karne ka Form -->
+    <h3>Naya Task Add Karein:</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Name:</label>
+            <input type="text" name="name" placeholder="Naam likhein..." required>
+        </div>
+
+        <div class="form-group">
+            <label>Number:</label>
+            <input type="text" name="number" placeholder="Phone number likhein..." required>
+        </div>
+
+        <div class="form-group">
+            <label>Message:</label>
+            <textarea name="message" placeholder="Apna message likhein..." required></textarea>
+        </div>
+
+        <button type="submit">Save Task</button>
+    </form>
+
+    <hr>
+
+    <!-- Purane Tasks jo Database mein Save hain -->
+    <h3>Aapke Saved Tasks:</h3>
+    <div>
+        {% for task in todos %}
+            <div class="task-card">
+                <h4>{{ task.name }}</h4>
+                <p><strong>Number:</strong> {{ task.number }}</p>
+                <p><strong>Message:</strong> {{ task.message }}</p>
+                <small style="color: gray;">Saved on: {{ task.created_at|date:"M d, Y - H:i" }}</small>
+            </div>
+        {% empty %}
+            <p style="color: gray; text-align: center;">Abhi tak koi task mojood nahi hai. Upar diye gaye form se naya task add karein!</p>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>
